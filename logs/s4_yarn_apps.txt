@@ -1,0 +1,5 @@
+[maria_dev@sandbox-hdp ~]$ yarn application -list -appStates FINISHED 2>/dev/null
+Total number of applications (application-types: [], states: [FINISHED] and tags: []):1
+                Application-Id	    Application-Name	    Application-Type	      User	     Queue	             State	       Final-State	       Progress	                       Tracking-URL
+application_1792660091975_0001	    PenguinsSparkApp	               SPARK	 maria_dev	   default	          FINISHED	         SUCCEEDED	           100%	                                N/A
+[maria_dev@sandbox-hdp ~]$ 
