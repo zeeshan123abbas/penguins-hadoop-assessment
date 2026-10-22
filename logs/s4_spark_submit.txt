@@ -1,0 +1,59 @@
+[maria_dev@sandbox-hdp ~]$ spark-submit --master local[2] spark/penguins_spark.py
+26/10/22 14:23:50 INFO SparkContext: Running Spark version 3.5.1
+26/10/22 14:23:50 INFO SparkContext: Submitted application: PenguinsSparkApp
+26/10/22 14:23:51 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+=== [1] Schema of penguins_clean.csv ===
+root
+ |-- species: string (nullable = true)
+ |-- island: string (nullable = true)
+ |-- bill_length_mm: double (nullable = true)
+ |-- bill_depth_mm: double (nullable = true)
+ |-- flipper_length_mm: double (nullable = true)
+ |-- body_mass_g: double (nullable = true)
+ |-- body_mass_kg: double (nullable = true)
+ |-- sex: string (nullable = true)
+ |-- year: integer (nullable = true)
+
+Rows read from HDFS: 342
++-------+---------+--------------+-------------+-----------------+-----------+------------+------+----+
+|species|island   |bill_length_mm|bill_depth_mm|flipper_length_mm|body_mass_g|body_mass_kg|sex   |year|
++-------+---------+--------------+-------------+-----------------+-----------+------------+------+----+
+|Adelie |Torgersen|39.1          |18.7         |181.0            |3750.0     |3.75        |male  |2007|
+|Adelie |Torgersen|39.5          |17.4         |186.0            |3800.0     |3.8         |female|2007|
+|Adelie |Torgersen|40.3          |18.0         |195.0            |3250.0     |3.25        |female|2007|
+|Adelie |Torgersen|36.7          |19.3         |193.0            |3450.0     |3.45        |female|2007|
+|Adelie |Torgersen|39.3          |20.6         |190.0            |3650.0     |3.65        |male  |2007|
++-------+---------+--------------+-------------+-----------------+-----------+------------+------+----+
+only showing top 5 rows
+
+
+=== [2] Records removed with flipper_length_mm <= 0 : 0
+Rows after filter (body_mass_kg >= 4.0): 177  [cached=True]
++-------+------+----+----+--------------+-----------------+------------+
+|species|island|sex |year|bill_length_mm|flipper_length_mm|body_mass_kg|
++-------+------+----+----+--------------+-----------------+------------+
+|Gentoo |Biscoe|male|2007|49.2          |221.0            |6.3         |
+|Gentoo |Biscoe|male|2007|59.6          |230.0            |6.05        |
+|Gentoo |Biscoe|male|2009|48.8          |222.0            |6.0         |
+|Gentoo |Biscoe|male|2008|51.1          |220.0            |6.0         |
+|Gentoo |Biscoe|male|2009|49.8          |229.0            |5.95        |
+|Gentoo |Biscoe|male|2008|45.2          |223.0            |5.95        |
+|Gentoo |Biscoe|male|2009|55.1          |230.0            |5.85        |
+|Gentoo |Biscoe|male|2007|49.3          |217.0            |5.85        |
+|Gentoo |Biscoe|male|2007|48.4          |213.0            |5.85        |
+|Gentoo |Biscoe|male|2008|48.6          |230.0            |5.8         |
++-------+------+----+----+--------------+-----------------+------------+
+only showing top 10 rows
+
+=== Summary of processed data per species ===
++---------+--------+-----------+--------------+
+|  species|penguins|avg_mass_kg|avg_flipper_mm|
++---------+--------+-----------+--------------+
+|   Adelie|      39|       4.31|         195.3|
+|Chinstrap|      16|       4.25|         203.1|
+|   Gentoo|     122|      5.085|         217.3|
++---------+--------+-----------+--------------+
+
+=== [3] JSON output written to hdfs://localhost:9000/user/maria_dev/spark/output/penguins (partitioned by species) ===
+Spark session stopped.
+[maria_dev@sandbox-hdp ~]$ 
