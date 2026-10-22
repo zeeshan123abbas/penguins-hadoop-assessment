@@ -1,0 +1,448 @@
+Connecting to jdbc:hive2://localhost:10000/default
+Connected to: Apache Hive (version 3.1.3)
+Driver: Hive JDBC (version 3.1.3)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/default> -- ==================================== =================================
+0: jdbc:hive2://localhost:10000/default> --  Section 2 - Hive Table and HiveQL
+0: jdbc:hive2://localhost:10000/default> --  Big Data with Hadoop | Palmer Pengu ins Assessment
+0: jdbc:hive2://localhost:10000/default> --  Run with:  beeline -u jdbc:hive2:// localhost:10000 -n maria_dev -f hive/penguins.hql
+0: jdbc:hive2://localhost:10000/default> --  (Before running:  hdfs dfs -mkdir - p /user/maria_dev/hive_stage
+0: jdbc:hive2://localhost:10000/default> --                    hdfs dfs -cp -f / user/maria_dev/datasets/penguins.csv /user/maria_dev/hive_stage/ )
+0: jdbc:hive2://localhost:10000/default> -- ==================================== =================================
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- 1. Database + table loaded from the  CSV in HDFS
+0: jdbc:hive2://localhost:10000/default> CREATE DATABASE IF NOT EXISTS penguins_ db
+. . . . . . . . . . . . . . . . . . . .> COMMENT 'Palmer penguins wildlife resea rch data';
+INFO  : Compiling command(queryId=sandbox_20261022091233_ac4a1db6-080a-4876-b1aa-f48c65da556c): CREATE DATABASE IF NOT EXISTS penguins_db
+COMMENT 'Palmer penguins wildlife research data'
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091233_ac4a1db6-080a-4876-b1aa-f48c65da556c); Time taken: 0.015 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091233_ac4a1db6-080a-4876-b1aa-f48c65da556c): CREATE DATABASE IF NOT EXISTS penguins_db
+COMMENT 'Palmer penguins wildlife research data'
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=sandbox_20261022091233_ac4a1db6-080a-4876-b1aa-f48c65da556c); Time taken: 0.013 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.069 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> USE penguins_db;
+INFO  : Compiling command(queryId=sandbox_20261022091233_a4a5fee2-7bf0-4fa6-b210-f589ea39160d): USE penguins_db
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091233_a4a5fee2-7bf0-4fa6-b210-f589ea39160d); Time taken: 0.016 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091233_a4a5fee2-7bf0-4fa6-b210-f589ea39160d): USE penguins_db
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=sandbox_20261022091233_a4a5fee2-7bf0-4fa6-b210-f589ea39160d); Time taken: 0.006 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.033 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> DROP TABLE IF EXISTS penguins_raw;
+INFO  : Compiling command(queryId=sandbox_20261022091233_60c6962d-9bab-439c-99bf-9755e1f460d4): DROP TABLE IF EXISTS penguins_raw
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091233_60c6962d-9bab-439c-99bf-9755e1f460d4); Time taken: 0.03 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091233_60c6962d-9bab-439c-99bf-9755e1f460d4): DROP TABLE IF EXISTS penguins_raw
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=sandbox_20261022091233_60c6962d-9bab-439c-99bf-9755e1f460d4); Time taken: 0.485 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.529 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> CREATE TABLE penguins_raw (
+. . . . . . . . . . . . . . . . . . . .>     species            STRING,
+. . . . . . . . . . . . . . . . . . . .>     island             STRING,
+. . . . . . . . . . . . . . . . . . . .>     bill_length_mm     DOUBLE,
+. . . . . . . . . . . . . . . . . . . .>     bill_depth_mm      DOUBLE,
+. . . . . . . . . . . . . . . . . . . .>     flipper_length_mm  INT,
+. . . . . . . . . . . . . . . . . . . .>     body_mass_g        INT,
+. . . . . . . . . . . . . . . . . . . .>     sex                STRING,
+. . . . . . . . . . . . . . . . . . . .>     year               INT
+. . . . . . . . . . . . . . . . . . . .> )
+. . . . . . . . . . . . . . . . . . . .> COMMENT 'Raw penguins measurements load ed from HDFS CSV'
+. . . . . . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED
+. . . . . . . . . . . . . . . . . . . .> FIELDS TERMINATED BY ','
+. . . . . . . . . . . . . . . . . . . .> LINES TERMINATED BY '\n'
+. . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES (
+. . . . . . . . . . . . . . . . . . . .>     'skip.header.line.count'   = '1',
+. . . . . . . . . . . . . . . . . . . .>     'serialization.null.format' = 'NA'
+. . . . . . . . . . . . . . . . . . . .> );
+INFO  : Compiling command(queryId=sandbox_20261022091234_c8ccc4c1-1278-4994-a057-e17c8f23f73a): CREATE TABLE penguins_raw (
+species            STRING,
+island             STRING,
+bill_length_mm     DOUBLE,
+bill_depth_mm      DOUBLE,
+flipper_length_mm  INT,
+body_mass_g        INT,
+sex                STRING,
+year               INT
+)
+COMMENT 'Raw penguins measurements loaded from HDFS CSV'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE
+TBLPROPERTIES (
+'skip.header.line.count'   = '1',
+'serialization.null.format' = 'NA'
+)
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091234_c8ccc4c1-1278-4994-a057-e17c8f23f73a); Time taken: 0.02 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091234_c8ccc4c1-1278-4994-a057-e17c8f23f73a): CREATE TABLE penguins_raw (
+species            STRING,
+island             STRING,
+bill_length_mm     DOUBLE,
+bill_depth_mm      DOUBLE,
+flipper_length_mm  INT,
+body_mass_g        INT,
+sex                STRING,
+year               INT
+)
+COMMENT 'Raw penguins measurements loaded from HDFS CSV'
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE
+TBLPROPERTIES (
+'skip.header.line.count'   = '1',
+'serialization.null.format' = 'NA'
+)
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=sandbox_20261022091234_c8ccc4c1-1278-4994-a057-e17c8f23f73a); Time taken: 0.068 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.108 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- Load the CSV that lives in HDFS (a s taging copy, so the original stays in /datasets)
+0: jdbc:hive2://localhost:10000/default> LOAD DATA INPATH '/user/maria_dev/hive_ stage/penguins.csv'
+. . . . . . . . . . . . . . . . . . . .> OVERWRITE INTO TABLE penguins_raw;
+INFO  : Compiling command(queryId=sandbox_20261022091234_141d51a7-66ac-4993-aabb-c16e370f1166): LOAD DATA INPATH '/user/maria_dev/hive_stage/penguins.csv'
+OVERWRITE INTO TABLE penguins_raw
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:null, properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091234_141d51a7-66ac-4993-aabb-c16e370f1166); Time taken: 0.047 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091234_141d51a7-66ac-4993-aabb-c16e370f1166): LOAD DATA INPATH '/user/maria_dev/hive_stage/penguins.csv'
+OVERWRITE INTO TABLE penguins_raw
+INFO  : Starting task [Stage-0:MOVE] in serial mode
+INFO  : Loading data to table penguins_db.penguins_raw from hdfs://localhost:9000/user/maria_dev/hive_stage/penguins.csv
+INFO  : Starting task [Stage-1:STATS] in serial mode
+INFO  : Completed executing command(queryId=sandbox_20261022091234_141d51a7-66ac-4993-aabb-c16e370f1166); Time taken: 0.086 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
+No rows affected (0.142 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> DESCRIBE penguins_raw;
+INFO  : Compiling command(queryId=sandbox_20261022091234_c6254f34-a3f0-49d8-919d-254e4e40705f): DESCRIBE penguins_raw
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:col_name, type:string, comment:from deserializer), FieldSchema(name:data_type, type:string, comment:from deserializer), FieldSchema(name:comment, type:string, comment:from deserializer)], properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091234_c6254f34-a3f0-49d8-919d-254e4e40705f); Time taken: 0.026 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091234_c6254f34-a3f0-49d8-919d-254e4e40705f): DESCRIBE penguins_raw
+INFO  : Starting task [Stage-0:DDL] in serial mode
+INFO  : Completed executing command(queryId=sandbox_20261022091234_c6254f34-a3f0-49d8-919d-254e4e40705f); Time taken: 0.019 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++--------------------+------------+----------+
+|      col_name      | data_type  | comment  |
++--------------------+------------+----------+
+| species            | string     |          |
+| island             | string     |          |
+| bill_length_mm     | double     |          |
+| bill_depth_mm      | double     |          |
+| flipper_length_mm  | int        |          |
+| body_mass_g        | int        |          |
+| sex                | string     |          |
+| year               | int        |          |
++--------------------+------------+----------+
+8 rows selected (0.083 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- 2. Preview
+0: jdbc:hive2://localhost:10000/default> SELECT * FROM penguins_raw LIMIT 10;
+INFO  : Compiling command(queryId=sandbox_20261022091234_5633de19-953c-4062-bd33-c12af90894c1): SELECT * FROM penguins_raw LIMIT 10
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:species, type:string, comment:null), FieldSchema(name:island, type:string, comment:null), FieldSchema(name:bill_length_mm, type:double, comment:null), FieldSchema(name:bill_depth_mm, type:double, comment:null), FieldSchema(name:flipper_length_mm, type:int, comment:null), FieldSchema(name:body_mass_g, type:int, comment:null), FieldSchema(name:sex, type:string, comment:null), FieldSchema(name:year, type:int, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091234_5633de19-953c-4062-bd33-c12af90894c1); Time taken: 0.1 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091234_5633de19-953c-4062-bd33-c12af90894c1): SELECT * FROM penguins_raw LIMIT 10
+INFO  : Completed executing command(queryId=sandbox_20261022091234_5633de19-953c-4062-bd33-c12af90894c1); Time taken: 0.0 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++----------+------------+-----------------+----------------+--------------------+--------------+---------+-------+
+| species  |   island   | bill_length_mm  | bill_depth_mm  | flipper_length_mm  | body_mass_g  |   sex   | year  |
++----------+------------+-----------------+----------------+--------------------+--------------+---------+-------+
+| Adelie   | Torgersen  | 39.1            | 18.7           | 181                | 3750         | male    | 2007  |
+| Adelie   | Torgersen  | 39.5            | 17.4           | 186                | 3800         | female  | 2007  |
+| Adelie   | Torgersen  | 40.3            | 18.0           | 195                | 3250         | female  | 2007  |
+| Adelie   | Torgersen  | NULL            | NULL           | NULL               | NULL         | NULL    | 2007  |
+| Adelie   | Torgersen  | 36.7            | 19.3           | 193                | 3450         | female  | 2007  |
+| Adelie   | Torgersen  | 39.3            | 20.6           | 190                | 3650         | male    | 2007  |
+| Adelie   | Torgersen  | 38.9            | 17.8           | 181                | 3625         | female  | 2007  |
+| Adelie   | Torgersen  | 39.2            | 19.6           | 195                | 4675         | male    | 2007  |
+| Adelie   | Torgersen  | 34.1            | 18.1           | 193                | 3475         | NULL    | 2007  |
+| Adelie   | Torgersen  | 42.0            | 20.2           | 190                | 4250         | NULL    | 2007  |
++----------+------------+-----------------+----------------+--------------------+--------------+---------+-------+
+10 rows selected (0.13 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> SELECT COUNT(*) AS total_records FROM p enguins_raw;
+INFO  : Compiling command(queryId=sandbox_20261022091234_c352cfde-5132-4646-8a11-0e156a869f4b): SELECT COUNT(*) AS total_records FROM penguins_raw
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:total_records, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091234_c352cfde-5132-4646-8a11-0e156a869f4b); Time taken: 0.11 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091234_c352cfde-5132-4646-8a11-0e156a869f4b): SELECT COUNT(*) AS total_records FROM penguins_raw
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+INFO  : Query ID = sandbox_20261022091234_c352cfde-5132-4646-8a11-0e156a869f4b
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_local295896454_0007
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://localhost:8080/
+INFO  : Job running in-process (local Hadoop)
+INFO  : 2026-10-22 09:12:36,175 Stage-1 map = 100%,  reduce = 100%
+INFO  : Ended Job = job_local295896454_0007
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1:  HDFS Read: 201270 HDFS Write: 32163 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 0 msec
+INFO  : Completed executing command(queryId=sandbox_20261022091234_c352cfde-5132-4646-8a11-0e156a869f4b); Time taken: 1.25 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++----------------+
+| total_records  |
++----------------+
+| 344            |
++----------------+
+1 row selected (1.431 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- 3a. Count records for each penguin s pecies and island
+0: jdbc:hive2://localhost:10000/default> SELECT species,
+. . . . . . . . . . . . . . . . . . . .>        island,
+. . . . . . . . . . . . . . . . . . . .>        COUNT(*) AS num_records
+. . . . . . . . . . . . . . . . . . . .> FROM   penguins_raw
+. . . . . . . . . . . . . . . . . . . .> GROUP  BY species, island
+. . . . . . . . . . . . . . . . . . . .> ORDER  BY species, island;
+INFO  : Compiling command(queryId=sandbox_20261022091236_7dc189ff-3542-4152-a448-44c8f734d6ee): SELECT species,
+island,
+COUNT(*) AS num_records
+FROM   penguins_raw
+GROUP  BY species, island
+ORDER  BY species, island
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:species, type:string, comment:null), FieldSchema(name:island, type:string, comment:null), FieldSchema(name:num_records, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091236_7dc189ff-3542-4152-a448-44c8f734d6ee); Time taken: 0.116 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091236_7dc189ff-3542-4152-a448-44c8f734d6ee): SELECT species,
+island,
+COUNT(*) AS num_records
+FROM   penguins_raw
+GROUP  BY species, island
+ORDER  BY species, island
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+INFO  : Query ID = sandbox_20261022091236_7dc189ff-3542-4152-a448-44c8f734d6ee
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_local1660780437_0008
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://localhost:8080/
+INFO  : Job running in-process (local Hadoop)
+INFO  : 2026-10-22 09:12:37,683 Stage-1 map = 100%,  reduce = 100%
+INFO  : Ended Job = job_local1660780437_0008
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : Selecting local mode for task: Stage-2
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_local254769714_0009
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://localhost:8080/
+INFO  : Job running in-process (local Hadoop)
+INFO  : 2026-10-22 09:12:39,722 Stage-2 map = 100%,  reduce = 100%
+INFO  : Ended Job = job_local254769714_0009
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1:  HDFS Read: 231958 HDFS Write: 32526 SUCCESS
+INFO  : Stage-Stage-2:  HDFS Read: 243591 HDFS Write: 48191 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 0 msec
+INFO  : Completed executing command(queryId=sandbox_20261022091236_7dc189ff-3542-4152-a448-44c8f734d6ee); Time taken: 3.332 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++------------+------------+--------------+
+|  species   |   island   | num_records  |
++------------+------------+--------------+
+| Adelie     | Biscoe     | 44           |
+| Adelie     | Dream      | 56           |
+| Adelie     | Torgersen  | 52           |
+| Chinstrap  | Dream      | 68           |
+| Gentoo     | Biscoe     | 124          |
++------------+------------+--------------+
+5 rows selected (3.479 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- 3b. Average body mass and average fl ipper length for each species
+0: jdbc:hive2://localhost:10000/default> SELECT species,
+. . . . . . . . . . . . . . . . . . . .>        ROUND(AVG(body_mass_g), 2)        AS avg_body_mass_g,
+. . . . . . . . . . . . . . . . . . . .>        ROUND(AVG(flipper_length_mm), 2)  AS avg_flipper_length_mm
+. . . . . . . . . . . . . . . . . . . .> FROM   penguins_raw
+. . . . . . . . . . . . . . . . . . . .> GROUP  BY species
+. . . . . . . . . . . . . . . . . . . .> ORDER  BY avg_body_mass_g DESC;
+INFO  : Compiling command(queryId=sandbox_20261022091239_e3c37a0f-6a91-4f29-8f7b-b70cd061408e): SELECT species,
+ROUND(AVG(body_mass_g), 2)       AS avg_body_mass_g,
+ROUND(AVG(flipper_length_mm), 2) AS avg_flipper_length_mm
+FROM   penguins_raw
+GROUP  BY species
+ORDER  BY avg_body_mass_g DESC
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:species, type:string, comment:null), FieldSchema(name:avg_body_mass_g, type:double, comment:null), FieldSchema(name:avg_flipper_length_mm, type:double, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091239_e3c37a0f-6a91-4f29-8f7b-b70cd061408e); Time taken: 0.168 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091239_e3c37a0f-6a91-4f29-8f7b-b70cd061408e): SELECT species,
+ROUND(AVG(body_mass_g), 2)       AS avg_body_mass_g,
+ROUND(AVG(flipper_length_mm), 2) AS avg_flipper_length_mm
+FROM   penguins_raw
+GROUP  BY species
+ORDER  BY avg_body_mass_g DESC
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+INFO  : Query ID = sandbox_20261022091239_e3c37a0f-6a91-4f29-8f7b-b70cd061408e
+INFO  : Total jobs = 2
+INFO  : Launching Job 1 out of 2
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks not specified. Estimated from input data size: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_local245311937_0010
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://localhost:8080/
+INFO  : Job running in-process (local Hadoop)
+INFO  : 2026-10-22 09:12:41,211 Stage-1 map = 100%,  reduce = 100%
+INFO  : Ended Job = job_local245311937_0010
+INFO  : Launching Job 2 out of 2
+INFO  : Starting task [Stage-2:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : Selecting local mode for task: Stage-2
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_local434574188_0011
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://localhost:8080/
+INFO  : Job running in-process (local Hadoop)
+INFO  : 2026-10-22 09:12:43,259 Stage-2 map = 100%,  reduce = 100%
+INFO  : Ended Job = job_local434574188_0011
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1:  HDFS Read: 278794 HDFS Write: 48647 SUCCESS
+INFO  : Stage-Stage-2:  HDFS Read: 289982 HDFS Write: 63712 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 0 msec
+INFO  : Completed executing command(queryId=sandbox_20261022091239_e3c37a0f-6a91-4f29-8f7b-b70cd061408e); Time taken: 3.324 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++------------+------------------+------------------------+
+|  species   | avg_body_mass_g  | avg_flipper_length_mm  |
++------------+------------------+------------------------+
+| Gentoo     | 5076.02          | 217.19                 |
+| Chinstrap  | 3733.09          | 195.82                 |
+| Adelie     | 3700.66          | 189.95                 |
++------------+------------------+------------------------+
+3 rows selected (3.521 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> -- 3c. Count missing values in bill_len gth_mm, flipper_length_mm, body_mass_g and sex
+0: jdbc:hive2://localhost:10000/default> SELECT SUM(CASE WHEN bill_length_mm     IS NULL THEN 1 ELSE 0 END) AS missing_bill_length_mm,
+. . . . . . . . . . . . . . . . . . . .>        SUM(CASE WHEN flipper_length_mm  IS NULL THEN 1 ELSE 0 END) AS missing_flipper_length_mm,
+. . . . . . . . . . . . . . . . . . . .>        SUM(CASE WHEN body_mass_g        IS NULL THEN 1 ELSE 0 END) AS missing_body_mass_g,
+. . . . . . . . . . . . . . . . . . . .>        SUM(CASE WHEN sex IS NULL OR TRI M(sex) = '' THEN 1 ELSE 0 END) AS missing_sex
+. . . . . . . . . . . . . . . . . . . .> FROM   penguins_raw;
+INFO  : Compiling command(queryId=sandbox_20261022091243_9add5705-4785-4802-8640-070c3cfbbfb3): SELECT SUM(CASE WHEN bill_length_mm    IS NULL THEN 1 ELSE 0 END) AS missing_bill_length_mm,
+SUM(CASE WHEN flipper_length_mm IS NULL THEN 1 ELSE 0 END) AS missing_flipper_length_mm,
+SUM(CASE WHEN body_mass_g       IS NULL THEN 1 ELSE 0 END) AS missing_body_mass_g,
+SUM(CASE WHEN sex IS NULL OR TRIM(sex) = '' THEN 1 ELSE 0 END) AS missing_sex
+FROM   penguins_raw
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Semantic Analysis Completed (retrial = false)
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:missing_bill_length_mm, type:bigint, comment:null), FieldSchema(name:missing_flipper_length_mm, type:bigint, comment:null), FieldSchema(name:missing_body_mass_g, type:bigint, comment:null), FieldSchema(name:missing_sex, type:bigint, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=sandbox_20261022091243_9add5705-4785-4802-8640-070c3cfbbfb3); Time taken: 0.122 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=sandbox_20261022091243_9add5705-4785-4802-8640-070c3cfbbfb3): SELECT SUM(CASE WHEN bill_length_mm    IS NULL THEN 1 ELSE 0 END) AS missing_bill_length_mm,
+SUM(CASE WHEN flipper_length_mm IS NULL THEN 1 ELSE 0 END) AS missing_flipper_length_mm,
+SUM(CASE WHEN body_mass_g       IS NULL THEN 1 ELSE 0 END) AS missing_body_mass_g,
+SUM(CASE WHEN sex IS NULL OR TRIM(sex) = '' THEN 1 ELSE 0 END) AS missing_sex
+FROM   penguins_raw
+WARN  : Hive-on-MR is deprecated in Hive 2 and may not be available in the future versions. Consider using a different execution engine (i.e. spark, tez) or using Hive 1.X releases.
+INFO  : Query ID = sandbox_20261022091243_9add5705-4785-4802-8640-070c3cfbbfb3
+INFO  : Total jobs = 1
+INFO  : Launching Job 1 out of 1
+INFO  : Starting task [Stage-1:MAPRED] in serial mode
+INFO  : Number of reduce tasks determined at compile time: 1
+INFO  : In order to change the average load for a reducer (in bytes):
+INFO  :   set hive.exec.reducers.bytes.per.reducer=<number>
+INFO  : In order to limit the maximum number of reducers:
+INFO  :   set hive.exec.reducers.max=<number>
+INFO  : In order to set a constant number of reducers:
+INFO  :   set mapreduce.job.reduces=<number>
+INFO  : number of splits:1
+INFO  : Submitting tokens for job: job_local675581102_0012
+INFO  : Executing with tokens: []
+INFO  : The url to track the job: http://localhost:8080/
+INFO  : Job running in-process (local Hadoop)
+INFO  : 2026-10-22 09:12:44,672 Stage-1 map = 100%,  reduce = 100%
+INFO  : Ended Job = job_local675581102_0012
+INFO  : MapReduce Jobs Launched: 
+INFO  : Stage-Stage-1:  HDFS Read: 324944 HDFS Write: 64012 SUCCESS
+INFO  : Total MapReduce CPU Time Spent: 0 msec
+INFO  : Completed executing command(queryId=sandbox_20261022091243_9add5705-4785-4802-8640-070c3cfbbfb3); Time taken: 1.242 seconds
+INFO  : OK
+INFO  : Concurrency mode is disabled, not creating a lock manager
++-------------------------+----------------------------+----------------------+--------------+
+| missing_bill_length_mm  | missing_flipper_length_mm  | missing_body_mass_g  | missing_sex  |
++-------------------------+----------------------------+----------------------+--------------+
+| 2                       | 2                          | 2                    | 11           |
++-------------------------+----------------------------+----------------------+--------------+
+1 row selected (1.391 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+0: jdbc:hive2://localhost:10000/default> Closing: 0: jdbc:hive2://localhost:10000/default
