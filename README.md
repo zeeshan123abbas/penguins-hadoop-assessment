@@ -39,8 +39,6 @@ flowchart LR
 ├── screenshots/          Evidence for every practical step
 ├── docs/charts/          Analysis charts
 ├── report/               Assessment report (PDF + DOCX)
-├── presentation/         Slide deck (PPTX)
-├── video/                Demo walkthrough (MP4)
 ├── tools/                Helpers used to capture transcripts and render evidence
 └── requirements.txt
 ```
@@ -118,8 +116,6 @@ Apache Hadoop 3.3.6 · Apache Hive 3.1.3 · Apache Spark 3.5.1 · OpenJDK 8 · P
 ## Deliverables
 
 - 📄 [Assessment report (PDF)](report/Hadoop_Penguins_Assessment_Report.pdf) · [DOCX](report/Hadoop_Penguins_Assessment_Report.docx)
-- 📊 [Presentation (PPTX)](presentation/Hadoop_Penguins_Presentation.pptx)
-- 🎬 [Demo video (MP4)](video/Hadoop_Penguins_Demo.mp4)
 
 ## Dataset
 
