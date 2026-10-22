@@ -1,0 +1,21 @@
+[maria_dev@sandbox-hdp hive]$ beeline -u jdbc:hive2://localhost:10000/penguins_db -n maria_dev -f t3a.hql
+Connecting to jdbc:hive2://localhost:10000/penguins_db
+Connected to: Apache Hive (version 3.1.3)
+Driver: Hive JDBC (version 3.1.3)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/penguins_db> SELECT species, island, COUNT(*) AS 
+. . . . . . . . . . . . . . . . . . . . . .> FROM penguins_raw
+. . . . . . . . . . . . . . . . . . . . . .> GROUP BY species, island
+. . . . . . . . . . . . . . . . . . . . . .> ORDER BY species, island;
++------------+------------+--------------+
+|  species   |   island   | num_records  |
++------------+------------+--------------+
+| Adelie     | Biscoe     | 44           |
+| Adelie     | Dream      | 56           |
+| Adelie     | Torgersen  | 52           |
+| Chinstrap  | Dream      | 68           |
+| Gentoo     | Biscoe     | 124          |
++------------+------------+--------------+
+5 rows selected (3.262 seconds)
+0: jdbc:hive2://localhost:10000/penguins_db> 
+[maria_dev@sandbox-hdp hive]$ 
