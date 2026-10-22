@@ -1,0 +1,23 @@
+[maria_dev@sandbox-hdp hive]$ beeline -u jdbc:hive2://localhost:10000/penguins_db -n maria_dev -f t2.hql
+Connecting to jdbc:hive2://localhost:10000/penguins_db
+Connected to: Apache Hive (version 3.1.3)
+Driver: Hive JDBC (version 3.1.3)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/penguins_db> SELECT * FROM penguins_raw LIMIT 10 
++----------+------------+-----------------+----------------+--------------------+--------------+---------+-------+
+| species  |   island   | bill_length_mm  | bill_depth_mm  | flipper_length_mm  | body_mass_g  |   sex   | year  |
++----------+------------+-----------------+----------------+--------------------+--------------+---------+-------+
+| Adelie   | Torgersen  | 39.1            | 18.7           | 181                | 3750         | male    | 2007  |
+| Adelie   | Torgersen  | 39.5            | 17.4           | 186                | 3800         | female  | 2007  |
+| Adelie   | Torgersen  | 40.3            | 18.0           | 195                | 3250         | female  | 2007  |
+| Adelie   | Torgersen  | NULL            | NULL           | NULL               | NULL         | NULL    | 2007  |
+| Adelie   | Torgersen  | 36.7            | 19.3           | 193                | 3450         | female  | 2007  |
+| Adelie   | Torgersen  | 39.3            | 20.6           | 190                | 3650         | male    | 2007  |
+| Adelie   | Torgersen  | 38.9            | 17.8           | 181                | 3625         | female  | 2007  |
+| Adelie   | Torgersen  | 39.2            | 19.6           | 195                | 4675         | male    | 2007  |
+| Adelie   | Torgersen  | 34.1            | 18.1           | 193                | 3475         | NULL    | 2007  |
+| Adelie   | Torgersen  | 42.0            | 20.2           | 190                | 4250         | NULL    | 2007  |
++----------+------------+-----------------+----------------+--------------------+--------------+---------+-------+
+10 rows selected (0.212 seconds)
+0: jdbc:hive2://localhost:10000/penguins_db> 
+[maria_dev@sandbox-hdp hive]$ 
