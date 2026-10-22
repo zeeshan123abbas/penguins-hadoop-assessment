@@ -1,0 +1,97 @@
+[maria_dev@sandbox-hdp ~]$ spark-submit --master local[2] spark/penguins_spark.py
+26/10/22 14:23:49 WARN Utils: Your hostname, sandbox-hdp resolves to a loopback address: 127.0.0.1; using 172.16.2.169 instead (on interface eth0)
+26/10/22 14:23:49 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+26/10/22 14:23:50 INFO SparkContext: Running Spark version 3.5.1
+26/10/22 14:23:50 INFO SparkContext: OS info Linux, 6.12.110+, aarch64
+26/10/22 14:23:50 INFO SparkContext: Java version 1.8.0_504
+26/10/22 14:23:50 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/10/22 14:23:50 INFO ResourceUtils: ==============================================================
+26/10/22 14:23:50 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/10/22 14:23:50 INFO ResourceUtils: ==============================================================
+26/10/22 14:23:50 INFO SparkContext: Submitted application: PenguinsSparkApp
+26/10/22 14:23:50 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/10/22 14:23:50 INFO ResourceProfile: Limiting resource is cpu
+26/10/22 14:23:50 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/10/22 14:23:50 INFO SecurityManager: Changing view acls to: maria_dev
+26/10/22 14:23:50 INFO SecurityManager: Changing modify acls to: maria_dev
+26/10/22 14:23:50 INFO SecurityManager: Changing view acls groups to: 
+26/10/22 14:23:50 INFO SecurityManager: Changing modify acls groups to: 
+26/10/22 14:23:50 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: maria_dev; groups with view permissions: EMPTY; users with modify permissions: maria_dev; groups with modify permissions: EMPTY
+26/10/22 14:23:50 INFO Utils: Successfully started service 'sparkDriver' on port 42957.
+26/10/22 14:23:50 INFO SparkEnv: Registering MapOutputTracker
+26/10/22 14:23:50 INFO SparkEnv: Registering BlockManagerMaster
+26/10/22 14:23:50 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/10/22 14:23:50 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/10/22 14:23:50 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/10/22 14:23:50 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-047bb7e1-3234-4fc2-a8f6-b7c6bd9b1a6a
+26/10/22 14:23:50 INFO MemoryStore: MemoryStore started with capacity 366.3 MiB
+26/10/22 14:23:50 INFO SparkEnv: Registering OutputCommitCoordinator
+26/10/22 14:23:51 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+26/10/22 14:23:51 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/10/22 14:23:51 INFO Executor: Starting executor ID driver on host 172.16.2.169
+26/10/22 14:23:51 INFO Executor: OS info Linux, 6.12.110+, aarch64
+26/10/22 14:23:51 INFO Executor: Java version 1.8.0_504
+26/10/22 14:23:51 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+26/10/22 14:23:51 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@27cbdf5a for default.
+26/10/22 14:23:51 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 37599.
+26/10/22 14:23:51 INFO NettyBlockTransferService: Server created on 172.16.2.169:37599
+26/10/22 14:23:51 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/10/22 14:23:51 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 172.16.2.169, 37599, None)
+26/10/22 14:23:51 INFO BlockManagerMasterEndpoint: Registering block manager 172.16.2.169:37599 with 366.3 MiB RAM, BlockManagerId(driver, 172.16.2.169, 37599, None)
+26/10/22 14:23:51 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 172.16.2.169, 37599, None)
+26/10/22 14:23:51 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 172.16.2.169, 37599, None)
+
+=== [1] Schema of penguins_clean.csv ===
+root
+ |-- species: string (nullable = true)
+ |-- island: string (nullable = true)
+ |-- bill_length_mm: double (nullable = true)
+ |-- bill_depth_mm: double (nullable = true)
+ |-- flipper_length_mm: double (nullable = true)
+ |-- body_mass_g: double (nullable = true)
+ |-- body_mass_kg: double (nullable = true)
+ |-- sex: string (nullable = true)
+ |-- year: integer (nullable = true)
+
+Rows read from HDFS: 342
++-------+---------+--------------+-------------+-----------------+-----------+------------+------+----+
+|species|island   |bill_length_mm|bill_depth_mm|flipper_length_mm|body_mass_g|body_mass_kg|sex   |year|
++-------+---------+--------------+-------------+-----------------+-----------+------------+------+----+
+|Adelie |Torgersen|39.1          |18.7         |181.0            |3750.0     |3.75        |male  |2007|
+|Adelie |Torgersen|39.5          |17.4         |186.0            |3800.0     |3.8         |female|2007|
+|Adelie |Torgersen|40.3          |18.0         |195.0            |3250.0     |3.25        |female|2007|
+|Adelie |Torgersen|36.7          |19.3         |193.0            |3450.0     |3.45        |female|2007|
+|Adelie |Torgersen|39.3          |20.6         |190.0            |3650.0     |3.65        |male  |2007|
++-------+---------+--------------+-------------+-----------------+-----------+------------+------+----+
+only showing top 5 rows
+
+
+=== [2] Records removed with flipper_length_mm <= 0 : 0
+Rows after filter (body_mass_kg >= 4.0): 177  [cached=True]
++-------+------+----+----+--------------+-----------------+------------+
+|species|island|sex |year|bill_length_mm|flipper_length_mm|body_mass_kg|
++-------+------+----+----+--------------+-----------------+------------+
+|Gentoo |Biscoe|male|2007|49.2          |221.0            |6.3         |
+|Gentoo |Biscoe|male|2007|59.6          |230.0            |6.05        |
+|Gentoo |Biscoe|male|2009|48.8          |222.0            |6.0         |
+|Gentoo |Biscoe|male|2008|51.1          |220.0            |6.0         |
+|Gentoo |Biscoe|male|2009|49.8          |229.0            |5.95        |
+|Gentoo |Biscoe|male|2008|45.2          |223.0            |5.95        |
+|Gentoo |Biscoe|male|2009|55.1          |230.0            |5.85        |
+|Gentoo |Biscoe|male|2007|49.3          |217.0            |5.85        |
+|Gentoo |Biscoe|male|2007|48.4          |213.0            |5.85        |
+|Gentoo |Biscoe|male|2008|48.6          |230.0            |5.8         |
++-------+------+----+----+--------------+-----------------+------------+
+only showing top 10 rows
+
+=== Summary of processed data per species ===
++---------+--------+-----------+--------------+
+|  species|penguins|avg_mass_kg|avg_flipper_mm|
++---------+--------+-----------+--------------+
+|   Adelie|      39|       4.31|         195.3|
+|Chinstrap|      16|       4.25|         203.1|
+|   Gentoo|     122|      5.085|         217.3|
++---------+--------+-----------+--------------+
+
+=== [3] JSON output written to hdfs://localhost:9000/user/maria_dev/spark/output/penguins (partitioned by species) ===
+Spark session stopped.
