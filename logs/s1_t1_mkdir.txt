@@ -1,0 +1,5 @@
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -mkdir -p /user/maria_dev/datasets
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -ls /user/maria_dev
+Found 1 items
+drwxr-xr-x   - maria_dev supergroup          0 2026-10-22 14:11 /user/maria_dev/datasets
+[maria_dev@sandbox-hdp ~]$ 
