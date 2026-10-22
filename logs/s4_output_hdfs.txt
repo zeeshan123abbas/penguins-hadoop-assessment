@@ -1,0 +1,18 @@
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -ls /user/maria_dev/spark/output/penguins
+Found 4 items
+-rw-r--r--   1 maria_dev supergroup          0 2026-10-22 14:24 /user/maria_dev/spark/output/penguins/_SUCCESS
+drwxr-xr-x   - maria_dev supergroup          0 2026-10-22 14:23 /user/maria_dev/spark/output/penguins/species=Adelie
+drwxr-xr-x   - maria_dev supergroup          0 2026-10-22 14:24 /user/maria_dev/spark/output/penguins/species=Chinstrap
+drwxr-xr-x   - maria_dev supergroup          0 2026-10-22 14:24 /user/maria_dev/spark/output/penguins/species=Gentoo
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -ls /user/maria_dev/spark/output/penguins/species=Gentoo
+Found 1 items
+-rw-r--r--   1 maria_dev supergroup      13862 2026-10-22 14:24 /user/maria_dev/spark/output/penguins/species=Gentoo/part-00000-40c31b5a-36b0-4ae6-9d6f-7abf0d007db5.c000.json
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -cat /user/maria_dev/spark/output/penguins/species=Adelie/part-*.json 2>/dev/null | head -5
+{"island":"Biscoe","sex":"male","year":2009,"bill_length_mm":43.2,"flipper_length_mm":197.0,"body_mass_kg":4.775}
+{"island":"Biscoe","sex":"male","year":2009,"bill_length_mm":41.0,"flipper_length_mm":203.0,"body_mass_kg":4.725}
+{"island":"Torgersen","sex":"male","year":2008,"bill_length_mm":42.9,"flipper_length_mm":196.0,"body_mass_kg":4.7}
+{"island":"Torgersen","sex":"male","year":2007,"bill_length_mm":39.2,"flipper_length_mm":195.0,"body_mass_kg":4.675}
+{"island":"Dream","sex":"male","year":2007,"bill_length_mm":39.8,"flipper_length_mm":184.0,"body_mass_kg":4.65}
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -count -h /user/maria_dev/spark/output/penguins
+           4            4             19.6 K /user/maria_dev/spark/output/penguins
+[maria_dev@sandbox-hdp ~]$ 
