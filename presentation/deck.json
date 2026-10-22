@@ -1,0 +1,208 @@
+{
+ "title": "Big Data with Hadoop \u2014 Palmer Penguins",
+ "template": "studio",
+ "palette": "basalt",
+ "brand": {
+  "name": "Big Data with Hadoop",
+  "site": "Zeeshan Abbas \u00b7 Aptech North"
+ },
+ "slides": [
+  {
+   "layout": "title",
+   "title": "Penguins on Hadoop",
+   "subtitle": "HDFS, Hive, WebHDFS ELT and PySpark on one dataset",
+   "items": [
+    {
+     "heading": "Dataset",
+     "body": "344 penguins, 8 columns"
+    },
+    {
+     "heading": "Stack",
+     "body": "Hadoop \u00b7 Hive \u00b7 Spark"
+    }
+   ]
+  },
+  {
+   "layout": "contents",
+   "title": "Pipeline",
+   "items": [
+    {
+     "heading": "01",
+     "body": "HDFS command line"
+    },
+    {
+     "heading": "02",
+     "body": "Hive table and HiveQL"
+    },
+    {
+     "heading": "03",
+     "body": "WebHDFS + Pandas ELT"
+    },
+    {
+     "heading": "04",
+     "body": "PySpark application"
+    },
+    {
+     "heading": "05",
+     "body": "Findings"
+    }
+   ]
+  },
+  {
+   "layout": "section",
+   "eyebrow": "01",
+   "title": "HDFS",
+   "body": "Create the folder, download, put, list."
+  },
+  {
+   "layout": "gallery",
+   "title": "Download and put",
+   "items": [
+    {
+     "image": "s1_t2_download_169.png",
+     "heading": "Dataset downloaded to the VM"
+    },
+    {
+     "image": "s1_t3_put_169.png",
+     "heading": "Copied into HDFS"
+    }
+   ]
+  },
+  {
+   "layout": "image",
+   "title": "Data lands in HDFS",
+   "body": "penguins.csv copied into /user/maria_dev/datasets and verified healthy.",
+   "image": "s1_t4_ls_169.png",
+   "placement": "full",
+   "scrim": "card",
+   "notes": "Commands: hdfs dfs -mkdir -p, curl download, hdfs dfs -put -f, hdfs dfs -ls. fsck shows 1 block, HEALTHY."
+  },
+  {
+   "layout": "section",
+   "eyebrow": "02",
+   "title": "Hive",
+   "body": "penguins_db.penguins_raw with NA mapped to NULL."
+  },
+  {
+   "layout": "gallery",
+   "title": "HiveQL results",
+   "items": [
+    {
+     "image": "s2_t3a.png",
+     "heading": "Records by species and island"
+    },
+    {
+     "image": "s2_t3b.png",
+     "heading": "Average mass and flipper"
+    }
+   ],
+   "notes": "Gentoo 124 on Biscoe, Chinstrap 68 on Dream, Adelie on all three islands. Gentoo average 5076 g, 217 mm."
+  },
+  {
+   "layout": "metrics",
+   "title": "Missing values",
+   "items": [
+    {
+     "value": "2",
+     "heading": "bill_length_mm",
+     "body": "of 344 records"
+    },
+    {
+     "value": "2",
+     "heading": "flipper_length_mm",
+     "body": "same 2 empty rows"
+    },
+    {
+     "value": "2",
+     "heading": "body_mass_g",
+     "body": "same 2 empty rows"
+    },
+    {
+     "value": "11",
+     "heading": "sex",
+     "body": "3.2% of records"
+    }
+   ],
+   "notes": "From Hive query 3c using SUM(CASE WHEN ... IS NULL)."
+  },
+  {
+   "layout": "section",
+   "eyebrow": "03",
+   "title": "ELT",
+   "body": "Jupyter reads HDFS through WebHDFS InsecureClient."
+  },
+  {
+   "layout": "numbered",
+   "title": "Cleaning steps",
+   "items": [
+    {
+     "heading": "Drop",
+     "body": "2 rows with no measurements removed (344 to 342)"
+    },
+    {
+     "heading": "Impute",
+     "body": "Numeric gaps filled with species median"
+    },
+    {
+     "heading": "Tidy",
+     "body": "Missing sex set to unknown"
+    },
+    {
+     "heading": "Convert",
+     "body": "body_mass_kg added, file uploaded to datasets/clean in HDFS"
+    }
+   ]
+  },
+  {
+   "layout": "image",
+   "title": "Clean data back in HDFS",
+   "body": "Notebook uploads the cleaned file and reads it back to verify.",
+   "image": "s3_notebook_06_169.png",
+   "placement": "full",
+   "scrim": "card"
+  },
+  {
+   "layout": "section",
+   "eyebrow": "04",
+   "title": "PySpark",
+   "body": "spark-submit reads, filters, sorts, caches and writes JSON."
+  },
+  {
+   "layout": "image",
+   "title": "Spark job output",
+   "body": "Schema printed, 177 heavy penguins kept, cached and saved partitioned by species.",
+   "image": "s4_spark_submit_169.png",
+   "placement": "full",
+   "scrim": "card"
+  },
+  {
+   "layout": "image",
+   "title": "Partitioned JSON",
+   "body": "species=Adelie, Chinstrap and Gentoo folders under spark/output/penguins.",
+   "image": "s4_output_hdfs_169.png",
+   "placement": "full",
+   "scrim": "card"
+  },
+  {
+   "layout": "chart",
+   "title": "What the data says",
+   "body": "Gentoo are the heaviest at 5.08 kg with 217 mm flippers.",
+   "image": "chart_avg_species.png"
+  },
+  {
+   "layout": "closing",
+   "title": "Pipeline runs end to end",
+   "body": "Every stage reads from and writes back to HDFS, so each step can be re-run alone.",
+   "items": [
+    {
+     "heading": "Code",
+     "body": "GitHub repository"
+    },
+    {
+     "heading": "Evidence",
+     "body": "Report with screenshots"
+    }
+   ]
+  }
+ ]
+}
