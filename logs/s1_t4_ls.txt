@@ -1,0 +1,15 @@
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -ls /user/maria_dev/datasets
+Found 1 items
+-rw-r--r--   1 maria_dev supergroup      15241 2026-10-22 14:11 /user/maria_dev/datasets/penguins.csv
+[maria_dev@sandbox-hdp ~]$ hdfs dfs -du -h /user/maria_dev/datasets
+14.9 K  14.9 K  /user/maria_dev/datasets/penguins.csv
+[maria_dev@sandbox-hdp ~]$ hdfs fsck /user/maria_dev/datasets/penguins.csv -files -blocks 2>/dev/null | head -8
+FSCK started by maria_dev (auth:SIMPLE) from /127.0.0.1 for path /user/maria_dev/datasets/penguins.csv at Thu Oct 22 09:11:16 UTC 2026
+
+/user/maria_dev/datasets/penguins.csv 15241 bytes, replicated: replication=1, 1 block(s):  OK
+0. BP-1123943961-127.0.0.1-1792660040500:blk_1073741826_1002 len=15241 Live_repl=1
+
+
+Status: HEALTHY
+ Number of data-nodes:	1
+[maria_dev@sandbox-hdp ~]$ 
