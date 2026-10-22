@@ -1,0 +1,39 @@
+[maria_dev@sandbox-hdp hive]$ beeline -u jdbc:hive2://localhost:10000/default -n maria_dev -f t1.hql
+Connecting to jdbc:hive2://localhost:10000/default
+Connected to: Apache Hive (version 3.1.3)
+Driver: Hive JDBC (version 3.1.3)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+0: jdbc:hive2://localhost:10000/default> CREATE DATABASE IF NOT EXISTS penguins_ 
+No rows affected (0.07 seconds)
+0: jdbc:hive2://localhost:10000/default> USE penguins_db;
+No rows affected (0.03 seconds)
+0: jdbc:hive2://localhost:10000/default> CREATE TABLE IF NOT EXISTS penguins_raw 
+. . . . . . . . . . . . . . . . . . . .> ROW FORMAT DELIMITED FIELDS TERMINATED  
+. . . . . . . . . . . . . . . . . . . .> STORED AS TEXTFILE
+. . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('skip.header.line.count' 
+No rows affected (0.056 seconds)
+0: jdbc:hive2://localhost:10000/default> LOAD DATA INPATH '/user/maria_dev/hive_ 
+No rows affected (0.163 seconds)
+0: jdbc:hive2://localhost:10000/default> SHOW TABLES;
++---------------+
+|   tab_name    |
++---------------+
+| penguins_raw  |
++---------------+
+1 row selected (0.076 seconds)
+0: jdbc:hive2://localhost:10000/default> DESCRIBE penguins_raw;
++--------------------+------------+----------+
+|      col_name      | data_type  | comment  |
++--------------------+------------+----------+
+| species            | string     |          |
+| island             | string     |          |
+| bill_length_mm     | double     |          |
+| bill_depth_mm      | double     |          |
+| flipper_length_mm  | int        |          |
+| body_mass_g        | int        |          |
+| sex                | string     |          |
+| year               | int        |          |
++--------------------+------------+----------+
+8 rows selected (0.084 seconds)
+0: jdbc:hive2://localhost:10000/default> 
+[maria_dev@sandbox-hdp hive]$ 
