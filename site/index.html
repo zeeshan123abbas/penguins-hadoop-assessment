@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hadoop Palmer Penguins Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap"
+    />
+    <link rel="stylesheet" href="hark.css" />
+    <link rel="stylesheet" href="hark-hero.css" />
+    <link rel="stylesheet" href="hark-charts.css" />
+    <style>
+      .x-path { overflow-wrap: anywhere; word-break: break-word; }
+      .x-code { position: relative; max-width: 100%; min-width: 0; border-radius: var(--r-m); background: var(--fill-tertiary); }
+      .x-code pre { max-width: 100%; }
+      .x-gallery, .x-shot { min-width: 0; }
+      .x-code + .x-code { margin-top: 10px; }
+      .x-code pre { margin: 0; padding: 16px 96px 16px 20px; overflow-x: auto; font: var(--weight-regular) var(--size-meta)/1.6 "Geist Mono", ui-monospace, monospace; color: var(--text-primary); }
+      .x-btn {
+        display: inline-flex; align-items: center; justify-content: center; min-height: 30px; padding: 5px 12px;
+        border-radius: var(--r-s); border: 1px solid var(--stroke-primary); background: var(--fill-primary-on);
+        color: var(--text-primary); font: var(--type-tag); cursor: pointer; transition: box-shadow var(--dur-quick) ease;
+      }
+      .x-btn:hover { box-shadow: inset 0 0 0 100px var(--hover-wash); }
+      .x-btn[aria-pressed="true"] { background: var(--fill-primary); color: var(--text-primary-on); border-color: var(--fill-primary); }
+      .x-code .x-btn { position: absolute; top: 8px; right: 8px; }
+      @media (pointer: coarse), (max-width: 599px) { .x-btn { min-height: var(--tap); padding-inline: 14px; } }
+      .x-seg { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+      .x-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 16px; }
+      .x-gallery--wide { grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+      .x-shot { margin: 0; }
+      .x-shot button { display: block; width: 100%; padding: 0; border: 1px solid var(--stroke-secondary); border-radius: var(--r-m); overflow: hidden; background: var(--fill-tertiary); cursor: zoom-in; }
+      .x-shot img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; transition: transform var(--dur-quick) var(--ease-out); }
+      .x-gallery--wide .x-shot img { object-fit: contain; background: var(--fill-primary-on); }
+      .x-shot button:hover img { transform: scale(1.02); }
+      .x-shot figcaption { font-size: var(--size-caption); color: var(--text-secondary); padding: 8px 4px 0; }
+      .x-lightbox { width: min(1200px, 94vw); max-width: none; max-height: 94vh; padding: 16px; border: 0; border-radius: var(--r-l); background: var(--fill-primary-on); color: var(--text-primary); box-shadow: var(--hark-shadow); }
+      .x-lightbox::backdrop { background: rgb(0 0 0 / 0.7); }
+      .x-lightbox__bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; font: var(--type-label); }
+      .x-lightbox__img img { width: 100%; max-height: calc(94vh - 110px); object-fit: contain; border-radius: var(--r-s); }
+    </style>
+  </head>
+  <body>
+    <div class="page" id="top">
+      <header class="nav glass" data-auto></header>
+      <main class="main">
+        <section class="hero">
+          <div class="hero__copy">
+            <p class="hero__eyebrow">Zeeshan Abbas · T3 Hadoop Assessment</p>
+            <h1>Big Data with Hadoop: Palmer Penguins Pipeline</h1>
+            <p class="hero__sub">End-to-end big data pipeline on 344 penguin records</p>
+            <p class="hero__meta">Hadoop 3.3.6 · Hive 3.1.3 · Spark 3.5.1 · Python 3.12 (pandas, hdfs) · OpenJDK 8 · user maria_dev · host sandbox-hdp</p>
+          </div>
+          <aside class="callout" aria-label="Next step">
+            <p class="callout__head"><span class="hark-mark" data-size="16"></span> Next step</p>
+            <p class="callout__lead"><strong>Review the code.</strong> Every script, notebook and log is in the repository.</p>
+            <div class="links">
+              <a class="btn" href="https://github.com/zeeshan123abbas/penguins-hadoop-assessment" target="_blank" rel="noopener">View source code on GitHub</a>
+              <a class="btn" href="https://github.com/zeeshan123abbas/penguins-hadoop-assessment/blob/main/report/Hadoop_Penguins_Assessment_Report.pdf" target="_blank" rel="noopener">Full report PDF</a>
+            </div>
+          </aside>
+        </section>
+
+        <section class="stats">
+          <div class="stat"><span class="stat__fig">344</span><span class="stat__label">Records loaded</span></div>
+          <div class="stat"><span class="stat__fig">342</span><span class="stat__label">After cleaning</span></div>
+          <div class="stat"><span class="stat__fig">3</span><span class="stat__label">Species across 3 islands</span></div>
+          <div class="stat"><span class="stat__fig">177</span><span class="stat__label">Penguins ≥ 4 kg written by Spark</span></div>
+          <div class="stat"><span class="stat__fig">0</span><span class="stat__label">Missing values after cleaning</span></div>
+        </section>
+
+        <section class="section" id="pipeline" data-nav="Pipeline">
+          <div class="head">
+            <p class="head__eyebrow">Architecture</p>
+            <h2>Seven steps from a CSV on GitHub to partitioned JSON in HDFS.</h2>
+            <p class="head__sub">Hive and the Pandas ELT both read the same raw file, in parallel.</p>
+          </div>
+          <div class="steps">
+            <article class="step">
+              <div class="step__intro"><p class="step__num">01</p><p class="step__eyebrow">Source</p></div>
+              <div><h3>penguins.csv</h3><p>The Palmer Penguins file on GitHub.</p></div>
+            </article>
+            <article class="step">
+              <div class="step__intro"><p class="step__num">02</p><p class="step__eyebrow">Ingest</p></div>
+              <div><h3>wget + hdfs dfs -put</h3><p>Downloaded to the sandbox, then pushed into HDFS.</p></div>
+            </article>
+            <article class="step">
+              <div class="step__intro"><p class="step__num">03</p><p class="step__eyebrow">Store</p></div>
+              <div><h3><span class="x-path">HDFS /user/maria_dev/datasets</span></h3><p>The raw file both branches read.</p></div>
+            </article>
+            <article class="step">
+              <div class="step__intro"><p class="step__num">04</p><p class="step__eyebrow">Branch A · analysis</p></div>
+              <div><h3>Hive penguins_db.penguins_raw</h3><p>Counts, averages and missing values in SQL.</p></div>
+            </article>
+            <article class="step">
+              <div class="step__intro"><p class="step__num">05</p><p class="step__eyebrow">Branch B · in parallel</p></div>
+              <div><h3>WebHDFS InsecureClient → Jupyter + Pandas</h3><p>Clean, impute and add a kg column.</p></div>
+            </article>
+            <article class="step">
+              <div class="step__intro"><p class="step__num">06</p><p class="step__eyebrow">Upload</p></div>
+              <div><h3><span class="x-path">HDFS /user/maria_dev/datasets/clean/penguins_clean.csv</span></h3><p>The cleaned file goes back into HDFS.</p></div>
+            </article>
+            <article class="step">
+              <div class="step__intro"><p class="step__num">07</p><p class="step__eyebrow">Process</p></div>
+              <div><h3>PySpark: schema, filter, sort, cache</h3><p>Writes JSON partitioned by species.</p></div>
+              <dl class="step__panel"><dt>Output</dt><dd><span class="x-path">/user/maria_dev/spark/output/penguins</span></dd></dl>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="hdfs" data-nav="HDFS">
+          <div class="head">
+            <p class="head__eyebrow">Section 1 · HDFS CLI</p>
+            <h2>The raw CSV is in HDFS: 15,241 bytes in one healthy block.</h2>
+          </div>
+          <div>
+            <div class="x-code"><pre><code>hdfs dfs -mkdir -p /user/maria_dev/datasets</code></pre></div>
+            <div class="x-code"><pre><code>wget https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv</code></pre></div>
+            <div class="x-code"><pre><code>hdfs dfs -put -f penguins.csv /user/maria_dev/datasets/</code></pre></div>
+            <div class="x-code"><pre><code>hdfs dfs -ls /user/maria_dev/datasets</code></pre></div>
+          </div>
+          <div class="breakdown">
+            <dl>
+              <div class="row"><dt>File <small class="x-path">/user/maria_dev/datasets/penguins.csv</small></dt><dd>15,241 bytes</dd></div>
+              <div class="row"><dt>Blocks</dt><dd>1 healthy</dd></div>
+              <div class="row"><dt>Lines <small>Including header</small></dt><dd>345</dd></div>
+            </dl>
+          </div>
+          <div class="x-gallery">
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: mkdir"><img src="s1_t1_mkdir.png" alt="Terminal: hdfs dfs -mkdir creating the datasets folder" /></button><figcaption>mkdir</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: download"><img src="s1_t2_download.png" alt="Terminal: wget downloading penguins.csv" /></button><figcaption>Download with wget</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: put"><img src="s1_t3_put.png" alt="Terminal: hdfs dfs -put uploading penguins.csv" /></button><figcaption>Put into HDFS</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: ls listing"><img src="s1_t4_ls.png" alt="Terminal: hdfs dfs -ls listing penguins.csv" /></button><figcaption>ls listing</figcaption></figure>
+          </div>
+        </section>
+
+        <section class="section" id="hive" data-nav="Hive">
+          <div class="head">
+            <p class="head__eyebrow">Section 2 · Hive</p>
+            <h2>344 rows loaded into penguins_db.penguins_raw and queried.</h2>
+            <p class="head__sub">Database penguins_db, external/managed table penguins_raw.</p>
+          </div>
+          <figure class="chart">
+            <figcaption class="chart__cap">Species count per island<small>Hive query result, number of penguins</small></figcaption>
+            <div class="x-seg" role="group" aria-label="Filter by species">
+              <button class="x-btn" type="button" data-species="All" aria-pressed="true">All</button>
+              <button class="x-btn" type="button" data-species="Adelie" aria-pressed="false">Adelie</button>
+              <button class="x-btn" type="button" data-species="Chinstrap" aria-pressed="false">Chinstrap</button>
+              <button class="x-btn" type="button" data-species="Gentoo" aria-pressed="false">Gentoo</button>
+            </div>
+            <div class="chart__canvas"><canvas id="island-chart" role="img" aria-label="Adelie: Biscoe 44, Dream 56, Torgersen 52. Chinstrap: Dream 68. Gentoo: Biscoe 124."></canvas></div>
+          </figure>
+          <div class="pair">
+            <figure class="chart">
+              <figcaption class="chart__cap">Average by species<small>Hive query result</small></figcaption>
+              <div class="x-seg" role="group" aria-label="Choose measure">
+                <button class="x-btn" type="button" data-measure="mass" aria-pressed="true">Body mass (g)</button>
+                <button class="x-btn" type="button" data-measure="flipper" aria-pressed="false">Flipper length (mm)</button>
+              </div>
+              <div class="chart__canvas"><canvas id="avg-chart" role="img" aria-label="Gentoo 5076.02 g and 217.19 mm; Chinstrap 3733.09 g and 195.82 mm; Adelie 3700.66 g and 189.95 mm"></canvas></div>
+            </figure>
+            <div class="breakdown">
+              <dl>
+                <div class="row"><dt>Bill length</dt><dd>2</dd></div>
+                <div class="row"><dt>Flipper length</dt><dd>2</dd></div>
+                <div class="row"><dt>Body mass</dt><dd>2</dd></div>
+                <div class="row"><dt>Sex</dt><dd>11</dd></div>
+              </dl>
+              <p class="fineprint">Missing values in the raw table, per column.</p>
+            </div>
+          </div>
+          <div class="x-gallery">
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: create database and table"><img src="s2_t1.png" alt="Hive: creating penguins_db and penguins_raw" /></button><figcaption>Create database and table</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: preview rows"><img src="s2_t2.png" alt="Hive: preview of the first rows" /></button><figcaption>Preview rows</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: counts"><img src="s2_t3a.png" alt="Hive: species count by island" /></button><figcaption>Counts by island</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: averages"><img src="s2_t3b.png" alt="Hive: averages by species" /></button><figcaption>Averages</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: missing values"><img src="s2_t3c.png" alt="Hive: missing values per column" /></button><figcaption>Missing values</figcaption></figure>
+          </div>
+        </section>
+
+        <section class="section" id="pandas" data-nav="Pandas">
+          <div class="head">
+            <p class="head__eyebrow">Section 3 · WebHDFS + Pandas ELT in Jupyter</p>
+            <h2>Cleaned to 342 rows with zero missing values, then written back to HDFS.</h2>
+          </div>
+          <div class="x-code"><pre><code>hdfs.InsecureClient('http://sandbox-hdp:9870', user='maria_dev')</code></pre></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th scope="col">Step</th><th scope="col">What happened</th><th scope="col">Rows</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Read</th><td>Loaded the raw CSV over WebHDFS</td><td class="num">344</td></tr>
+                <tr><th scope="row">Drop</th><td>Removed 2 rows with all measurements missing</td><td class="num">342</td></tr>
+                <tr><th scope="row">Impute</th><td>Numeric gaps filled with the species median; missing sex set to "unknown"</td><td class="num">342</td></tr>
+                <tr><th scope="row">Derive</th><td>Added body_mass_kg = body_mass_g / 1000</td><td class="num">342</td></tr>
+                <tr class="is-highlight"><th scope="row">Upload <small>18,357 bytes, verified</small></th><td><span class="x-path">/user/maria_dev/datasets/clean/penguins_clean.csv</span>, 0 missing values</td><td class="num">342</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="x-gallery">
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: notebook 1"><img src="s3_notebook_01.png" alt="Jupyter notebook, part 1" /></button><figcaption>Notebook 1</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: notebook 2"><img src="s3_notebook_02.png" alt="Jupyter notebook, part 2" /></button><figcaption>Notebook 2</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: notebook 3"><img src="s3_notebook_03.png" alt="Jupyter notebook, part 3" /></button><figcaption>Notebook 3</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: notebook 4"><img src="s3_notebook_04.png" alt="Jupyter notebook, part 4" /></button><figcaption>Notebook 4</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: notebook 5"><img src="s3_notebook_05.png" alt="Jupyter notebook, part 5" /></button><figcaption>Notebook 5</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: notebook 6"><img src="s3_notebook_06.png" alt="Jupyter notebook, part 6" /></button><figcaption>Notebook 6</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: clean file in HDFS"><img src="s3_clean_hdfs.png" alt="HDFS listing showing penguins_clean.csv" /></button><figcaption>Clean file in HDFS</figcaption></figure>
+          </div>
+        </section>
+
+        <section class="section" id="spark" data-nav="Spark">
+          <div class="head">
+            <p class="head__eyebrow">Section 4 · PySpark</p>
+            <h2>Spark filtered 177 penguins of 4 kg or more and wrote them as JSON by species.</h2>
+            <p class="head__sub">Submitted on YARN and on local[2].</p>
+          </div>
+          <div class="x-code"><pre><code>spark-submit --master yarn spark/penguins_spark.py</code></pre></div>
+          <div class="pair">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th scope="col">Operation</th><th scope="col">Result</th></tr></thead>
+                <tbody>
+                  <tr><th scope="row">Read <small>Explicit schema</small></th><td class="num">342 rows</td></tr>
+                  <tr><th scope="row">printSchema, select</th><td class="muted">Columns checked</td></tr>
+                  <tr class="is-highlight"><th scope="row">Filter <small>body_mass_kg &gt;= 4.0</small></th><td class="num">177 rows</td></tr>
+                  <tr><th scope="row">Invalid flipper lengths</th><td class="num">0 removed</td></tr>
+                  <tr><th scope="row">Sort, cache</th><td class="muted">Body mass descending, cached</td></tr>
+                  <tr><th scope="row">Write <small>JSON, partitioned by species</small></th><td class="muted">species=Adelie, species=Chinstrap, species=Gentoo</td></tr>
+                  <tr><th scope="row">spark.stop()</th><td class="muted">Session closed</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <aside class="callout" aria-label="YARN run">
+              <p class="callout__head">YARN run</p>
+              <p class="callout__lead"><strong class="x-path">application_1792660091975_0001</strong> finished on the cluster.</p>
+              <p><span class="chip chip--solid">SUCCEEDED</span></p>
+              <p class="fineprint">Output: <span class="x-path">/user/maria_dev/spark/output/penguins</span></p>
+            </aside>
+          </div>
+          <div class="x-gallery">
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: spark-submit output"><img src="s4_spark_submit.png" alt="Terminal: spark-submit output" /></button><figcaption>spark-submit output</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: YARN applications"><img src="s4_yarn_apps.png" alt="YARN applications list showing SUCCEEDED" /></button><figcaption>YARN applications</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: partitioned JSON output"><img src="s4_output_hdfs.png" alt="HDFS listing of species partitions" /></button><figcaption>Partitioned JSON output</figcaption></figure>
+          </div>
+        </section>
+
+        <section class="section" id="charts" data-nav="Charts">
+          <div class="head">
+            <p class="head__eyebrow">Analysis</p>
+            <h2>The notebook's charts, from the cleaned data.</h2>
+            <p class="head__sub">Click any chart to enlarge it.</p>
+          </div>
+          <div class="x-gallery x-gallery--wide">
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: averages by species"><img src="chart_avg_species.png" alt="Chart of averages by species" /></button><figcaption>Averages by species</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: species by island"><img src="chart_species_island.png" alt="Chart of species by island" /></button><figcaption>Species by island</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: bill length vs depth"><img src="chart_scatter.png" alt="Scatter of bill length against bill depth" /></button><figcaption>Bill length vs depth</figcaption></figure>
+            <figure class="x-shot"><button type="button" aria-label="Enlarge: missing values"><img src="chart_missing.png" alt="Chart of missing values per column" /></button><figcaption>Missing values</figcaption></figure>
+          </div>
+        </section>
+
+        <section class="section" id="findings" data-nav="Findings">
+          <div class="head"><h2>Three things the data shows.</h2></div>
+          <div class="cards">
+            <div><h3>Gentoo are the heaviest</h3><p class="quote">5.08 kg on average</p><p>They also have the longest flippers, at 217.19 mm.</p></div>
+            <div><h3>Islands split by species</h3><ul><li>Chinstrap live only on Dream</li><li>Gentoo live only on Biscoe</li><li>Adelie live on all three islands</li></ul></div>
+            <div><h3>Data quality was high</h3><p>Only 2 fully empty rows and 11 missing sex values.</p></div>
+          </div>
+        </section>
+
+        <section class="section" id="repo" data-nav="Repo">
+          <div class="head">
+            <h2>Run it yourself from the repository.</h2>
+            <p class="head__sub">One script runs everything, or use the section commands above.</p>
+          </div>
+          <div class="x-code"><pre><code>bash scripts/run_all.sh</code></pre></div>
+          <div class="pair">
+            <div class="cards">
+              <div><h3>Folders</h3><p>data · hdfs · hive · notebooks · spark · src · tests · logs · screenshots · docs · report</p></div>
+            </div>
+            <div class="links">
+              <a class="btn" href="https://github.com/zeeshan123abbas/penguins-hadoop-assessment" target="_blank" rel="noopener">GitHub repository</a>
+              <a class="btn" href="https://github.com/zeeshan123abbas/penguins-hadoop-assessment/blob/main/report/Hadoop_Penguins_Assessment_Report.pdf" target="_blank" rel="noopener">Full report PDF</a>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="foot">
+        <p>Dataset: Palmer Penguins, Dr. Kristen Gorman &amp; Palmer Station LTER (CC0). MIT License. © 2026 Zeeshan Abbas.</p>
+        <nav aria-label="Back to sections" data-auto></nav>
+        <a class="badge" href="https://hark.com/" target="_blank" rel="noopener"><span class="hark-mark"></span><span>built by hark</span></a>
+      </footer>
+    </div>
+
+    <dialog class="x-lightbox" id="lightbox" aria-label="Enlarged screenshot">
+      <div class="x-lightbox__bar"><span id="lightbox-cap"></span><button class="x-btn" type="button" id="lightbox-close">Close</button></div>
+      <div class="x-lightbox__img" id="lightbox-img"></div>
+    </dialog>
+
+    <script type="application/json" id="hive-data">
+      {
+        "islands": ["Biscoe", "Dream", "Torgersen"],
+        "counts": { "Adelie": [44, 56, 52], "Chinstrap": [0, 68, 0], "Gentoo": [124, 0, 0] },
+        "species": ["Adelie", "Chinstrap", "Gentoo"],
+        "avgMass": [3700.66, 3733.09, 5076.02],
+        "avgFlipper": [189.95, 195.82, 217.19]
+      }
+    </script>
+    <script src="hark.js"></script>
+    <script src="chart.js"></script>
+    <script src="datalabels.js"></script>
+    <script src="hark-charts.js"></script>
+    <script>
+      (function () {
+        const d = Hark.data("hive-data");
+
+        // Species per island, with a species filter
+        const island = new Chart(document.getElementById("island-chart"), {
+          type: "bar",
+          data: {
+            labels: d.islands,
+            datasets: d.species.map((s, i) => ({ label: s, data: d.counts[s], backgroundColor: `var(--chart-${i + 1})` })),
+          },
+          options: {
+            scales: { y: { ticks: { stepSize: 20 } } },
+            plugins: { datalabels: { ...Hark.labels.values, display: (ctx) => ctx.raw > 0 } },
+          },
+        });
+        document.querySelectorAll("[data-species]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const pick = btn.dataset.species;
+            document.querySelectorAll("[data-species]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+            d.species.forEach((s, i) => island.setDatasetVisibility(i, pick === "All" || pick === s));
+            island.update();
+          });
+        });
+
+        // Average body mass vs flipper length toggle
+        const measures = {
+          mass: { label: "Avg body mass", data: d.avgMass, unit: " g" },
+          flipper: { label: "Avg flipper length", data: d.avgFlipper, unit: " mm" },
+        };
+        let unit = measures.mass.unit;
+        const fmt = (v) => Number(v).toLocaleString(undefined, { maximumFractionDigits: 2 }) + unit;
+        const avg = new Chart(document.getElementById("avg-chart"), {
+          type: "bar",
+          data: {
+            labels: d.species,
+            datasets: [{ label: measures.mass.label, data: d.avgMass, backgroundColor: d.species.map((s, i) => `var(--chart-${i + 1})`) }],
+          },
+          options: {
+            scales: { y: { ticks: { callback: (v) => Number(v).toLocaleString() + unit } } },
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: (ctx) => fmt(ctx.raw) } },
+              datalabels: { ...Hark.labels.values, formatter: (v) => fmt(v) },
+            },
+          },
+        });
+        document.querySelectorAll("[data-measure]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const m = measures[btn.dataset.measure];
+            document.querySelectorAll("[data-measure]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+            unit = m.unit;
+            avg.data.datasets[0].data = m.data;
+            avg.data.datasets[0].label = m.label;
+            avg.update();
+          });
+        });
+
+        // Copy buttons
+        document.querySelectorAll(".x-code").forEach((block) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "x-btn";
+          btn.textContent = "Copy";
+          btn.setAttribute("aria-label", "Copy command");
+          btn.addEventListener("click", () => {
+            const code = block.querySelector("code");
+            const text = code.textContent;
+            const fallback = () => {
+              try {
+                const r = document.createRange();
+                r.selectNodeContents(code);
+                const sel = getSelection();
+                sel.removeAllRanges();
+                sel.addRange(r);
+                document.execCommand("copy");
+                sel.removeAllRanges();
+              } catch (e) {}
+            };
+            btn.textContent = "Copied";
+            btn.setAttribute("aria-label", "Copied to clipboard");
+            block.classList.add("is-copied");
+            setTimeout(() => {
+              btn.textContent = "Copy";
+              btn.setAttribute("aria-label", "Copy command");
+              block.classList.remove("is-copied");
+            }, 1600);
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).catch(fallback);
+            } else {
+              fallback();
+            }
+          });
+          block.appendChild(btn);
+        });
+
+        // Lightbox
+        const box = document.getElementById("lightbox");
+        const holder = document.getElementById("lightbox-img");
+        const cap = document.getElementById("lightbox-cap");
+        document.querySelectorAll(".x-shot button").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const img = btn.querySelector("img").cloneNode(true);
+            holder.replaceChildren(img);
+            cap.textContent = btn.closest(".x-shot").querySelector("figcaption").textContent;
+            box.showModal();
+          });
+        });
+        document.getElementById("lightbox-close").addEventListener("click", () => box.close());
+        box.addEventListener("click", (e) => { if (e.target === box) box.close(); });
+      })();
+    </script>
+  </body>
+</html>
