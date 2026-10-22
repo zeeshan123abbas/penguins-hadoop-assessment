@@ -5,6 +5,9 @@
 ![Spark](https://img.shields.io/badge/Spark-3.5.1-E25A1C?logo=apachespark&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
+[![CI](https://github.com/zeeshan123abbas/penguins-hadoop-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/zeeshan123abbas/penguins-hadoop-assessment/actions/workflows/ci.yml)
+
+### 🌐 [Live dashboard](https://zeeshan123abbas.github.io/penguins-hadoop-assessment/) · 📄 [Report (PDF)](report/Hadoop_Penguins_Assessment_Report.pdf)
 
 An end-to-end big data pipeline on the **Palmer Penguins** dataset (344 records):
 **HDFS → Hive → Python/Pandas ELT over WebHDFS → PySpark**, executed on a working Hadoop cluster as user `maria_dev`.
@@ -39,7 +42,13 @@ flowchart LR
 ├── screenshots/          Evidence for every practical step
 ├── docs/charts/          Analysis charts
 ├── report/               Assessment report (PDF + DOCX)
+├── src/                  Reusable, tested cleaning module
+├── tests/                Pytest suite (10 tests)
+├── scripts/              run_all.sh: whole pipeline in one command
+├── site/                 Interactive dashboard (deployed to GitHub Pages)
 ├── tools/                Helpers used to capture transcripts and render evidence
+├── .github/workflows/    CI: syntax check + tests on every push
+├── Makefile
 └── requirements.txt
 ```
 
@@ -87,11 +96,18 @@ More in [`screenshots/`](screenshots/), full transcripts in [`logs/`](logs/).
 |---|---|
 | ![](docs/charts/chart_avg_species.png) | ![](docs/charts/chart_species_island.png) |
 
+## Interactive dashboard
+
+A web dashboard with the pipeline diagram, filterable charts, every result table and a screenshot gallery is live at **[https://zeeshan123abbas.github.io/penguins-hadoop-assessment/](https://zeeshan123abbas.github.io/penguins-hadoop-assessment/)**. Source: [`site/`](site/).
+
 ## How to run
 
 **Prerequisites:** Hadoop (HDFS + YARN), Hive with HiveServer2, Spark 3.x, Python 3 with `pip install -r requirements.txt`.
 
 ```bash
+# Everything in one go
+bash scripts/run_all.sh        # or: make pipeline
+
 # Section 1: HDFS
 bash hdfs/section1_hdfs_commands.sh
 
@@ -108,6 +124,17 @@ spark-submit --master yarn spark/penguins_spark.py     # or --master local[2]
 ```
 
 > **HDP Sandbox:** set `WEBHDFS_URL = "http://sandbox-hdp.hortonworks.com:50070"` in the notebook and `HDFS_NN = "hdfs://sandbox-hdp.hortonworks.com:8020"` in the Spark script.
+
+## Tests
+
+The cleaning logic lives in [`src/penguins_clean.py`](src/penguins_clean.py) and is covered by [`tests/`](tests/): row counts, species counts, missing values, imputation, kg conversion and the Spark ≥ 4 kg filter (177 rows).
+
+```bash
+pip install pandas pytest
+python -m pytest -q      # 10 passed
+```
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for design decisions and the issues fixed during setup.
 
 ## Environment used
 
